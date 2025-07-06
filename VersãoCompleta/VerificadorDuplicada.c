@@ -15,3 +15,12 @@ typedef struct TabelaHash{
     No **listas;
     int tamanho;
 } TabelaHash;
+
+unsigned int calcular_hash(const char *str, int tamanho){
+    unsigned int hash = 5381;
+    while (*str){
+        hash = ((hash << 5) + hash) + (unsigned char)(*str);
+        str++;
+    }
+    return hash % tamanho;
+}
