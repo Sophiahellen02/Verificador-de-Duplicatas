@@ -24,3 +24,40 @@ unsigned int calcular_hash(const char *str, int tamanho){
     }
     return hash % tamanho;
 }
+
+TabelaHash *criar_tabela_hash(int tamanho){
+    TabelaHash *tabela = malloc(sizeof(TabelaHash));
+    tabela->tamanho = tamanho;
+    tabela->listas = calloc(tamanho, sizeof(No *));
+    return tabela;
+}
+
+void liberar_tabela_hash(TabelaHash *tabela){
+    for (int i = 0; i < tabela->tamanho; i++){
+        No *atual = tabela->listas[i];
+        while (atual){
+            No *temp = atual;
+            atual = atual->prox;
+            free(temp->str);
+            free(temp);
+        }
+    }
+    free(tabela->listas);
+    free(tabela);
+}
+
+int inserir_tabela_hash(TabelaHash *tabela, const char *str){
+    unsigned int indece = calcular_hash(str, tabela->tamanho);
+    No *atual = tabela->listas[indece];
+    while (atual){
+        if (strcmp(atual->str, str) == 0){
+            return 1;
+        }
+        atual = atual->prox;
+    }
+    No *novo = malloc(sizeof(No));
+    novo->str = strdup(str);
+    novo->prox = tabela->listas[indece];
+    tabela->listas[indece] = novo;
+    return 0;
+}
