@@ -8,6 +8,7 @@
 
 typedef struct No{
     char *str;
+    int contagem;
     struct No *prox;
 } No;
 
@@ -54,16 +55,36 @@ int inserir_tabela_hash(TabelaHash *tabela, const char *str){
 
     while (atual){
         if (strcmp(atual->str, str) == 0){
-            return 1;
+            atual->contagem++;
+            return;
         }
         atual = atual->prox;
     }
 
     No *novo = malloc(sizeof(No));
     novo->str = strdup(str);
+    novo->contagem = 1;
     novo->prox = tabela->listas[indece];
     tabela->listas[indece] = novo;
     return 0;
+}
+
+void imprime_duplicatas(TabelaHash *tabela){
+    int encontrou = 0;
+    printf("Duplicatas encontradas:\n");
+    for (int i = 0; i < tabela->tamanho; i++){
+        No *atual = tabela->listas[i];
+        while (atual){
+            if (atual->contagem > 1){
+                printf("%s: %d vezes\n", atual->str, atual->contagem);
+                encontrou = 1;
+            }
+            atual = atual->prox;
+        }
+    }
+    if(!encontrou){
+        printf("Nenhuma duplicata encontrada.\n");
+    }
 }
 
 char **carregar_csv(const char *nome_arquivo, int *n){
@@ -138,4 +159,66 @@ void menu(){
     printf("0. Sair\n");
     printf("============================\n");
     printf("Escolha: ");
+}
+
+int main(){
+    char **lista = NULL;
+    int n = 0;
+    int opcao;
+
+    while(1){
+        menu();
+        scanf("%d%*c", &opcao);
+
+        if(opcao == 0){
+            break;
+        }
+
+        if(opcao == 1){
+            printf("Quantas strings deseja inserir? ");
+            scanf("%d%*c", &n);
+            if(n > TAM_MAX_LINHA) n = TAM_MAX_LINHA;
+            lista = malloc(n * sizeof(char *));
+            char buffer[TAM_MAX_LINHA];
+            for(int i = 0; i < n; i++){
+                printf("Insira a string %d: ", i + 1);
+                fgets(buffer, TAM_MAX_LINHA, stdin);
+                buffer[strcspn(buffer, "\n")] = 0; // Remove newline
+                lista[i] = strdup(buffer);
+            }
+        } else if(opcao == 2){
+            char nome_arquivo[100];
+            printf("Insira o nome do arquivo CSV: ");
+             fgets(nome_arquivo, 100, stdin);
+            nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
+            lista = carrega_csv(nome_arquivo, &n);
+            if (!lista) continue;
+            printf("Arquivo carregado com %d entradas.\n", n);
+        } else{
+            printf("Opção inválida. Tente novamente.\n");
+            continue;
+        }
+
+        TabelaHash *tabela = criar_tabela_hash(TAM_MAX_LISTA);
+        struct timespec inicio, fim;
+        clock_gettime(CLOCK_MONOTONIC, &inicio);
+
+        for(int i = 0; i < n; i++){
+            inserir_tabela_hash(tabela, lista[i]);
+        }
+
+        clock_gettime(CLOCK_MONOTONIC, &fim);
+        double tempo = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
+        printf("Inserção concluída em %.6f segundos.\n", tempo);
+
+        imprime_duplicatas(tabela);
+
+        liberar_tabela_hash(tabela);
+        liberar_listas(lista, n);
+        lista = NULL;
+        n = 0;
+    }
+
+    printf("Programa encerrado.\n");
+    return 0;
 }
