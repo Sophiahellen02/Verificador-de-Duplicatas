@@ -23,7 +23,7 @@ unsigned int calcular_hash(const char *str, int tamanho){
         hash = ((hash << 5) + hash) + (unsigned char)(*str);
         str++;
     }
-    
+
     return hash % tamanho;
 }
 
@@ -84,4 +84,58 @@ char **carregar_csv(const char *nome_arquivo, int *n){
     }
     fclose(arquivo);
     return linhas;
+}
+
+void liberar_listas(char **linhas, int n){
+    for (int i = 0; i < n; i++){
+        free(linhas[i]);
+    }
+    free(linhas);
+}
+
+int comparar_strings(const void *a, const void *b){
+    char * const *sa = a;
+    char * const *sb = b;
+    return strcmp(*sa, *sb);
+}
+
+int verifica_ordenado(char **linhas, int n){
+    qsort(linhas, n, sizeof(char *), comparar_strings);
+    for (int i = 1; i < n; i++){
+        if (strcmp(linhas[i], linhas[i + 1]) == 0){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int verifica_linear(char **linhas, int n){
+    for(int i = 0; i < n - 1; i++){
+        for(int j = i + 1; j < n; j++){
+            if (strcmp(linhas[i], linhas[j]) == 0){
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+void medir_tempo(const char *nome, int (*func)(char **, int), char **linhas, int n){
+    struct timespec inicio, fim;
+    clock_gettime(CLOCK_MONOTONIC, &inicio);
+    int resultado = func(linhas, n);
+    clock_gettime(CLOCK_MONOTONIC, &fim);
+    double tempo = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
+    printf("%s: %s (%.6f segundos)\n", nome, resultado ? "Duplicados encontrados" : "Nenhum duplicado", tempo);
+    printf("Tempo de execução: %.6f segundos\n", tempo);
+}
+void menu(){
+    printf("\n============================\n");
+    printf(" VERIFICADOR DE DUPLICATAS\n");
+    printf("============================\n");
+    printf("1. Inserir manualmente\n");
+    printf("2. Importar CSV\n");
+    printf("0. Sair\n");
+    printf("============================\n");
+    printf("Escolha: ");
 }
