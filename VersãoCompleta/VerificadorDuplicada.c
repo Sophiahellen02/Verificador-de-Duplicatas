@@ -186,7 +186,7 @@ int main(){
             }
         } else if(opcao == 2){
             char nome_arquivo[100];
-            printf("Insira o nome do arquivo CSV: ");
+            printf("\nInsira o nome do arquivo CSV: ");
             fgets(nome_arquivo, 100, stdin);
             nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
             lista = carregar_csv(nome_arquivo, &n);
