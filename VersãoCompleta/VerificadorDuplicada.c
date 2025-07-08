@@ -74,7 +74,7 @@ void imprime_duplicatas(TabelaHash *tabela){
         No *atual = tabela->listas[i];
         while (atual){
             if (atual->contagem > 1){
-                printf("%s: %d vezes\n", atual->str, atual->contagem);
+                printf("    %s: %d vezes\n", atual->str, atual->contagem);
                 encontrou = 1;
             }
             atual = atual->prox;
@@ -179,7 +179,7 @@ int main(){
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
             for(int i = 0; i < n; i++){
-                printf("Insira a string %d: ", i + 1);
+                printf("    Insira a string %d: ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
                 buffer[strcspn(buffer, "\n")] = 0;
                 lista[i] = strdup(buffer);
