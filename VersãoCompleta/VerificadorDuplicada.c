@@ -19,12 +19,10 @@ typedef struct TabelaHash{
 
 unsigned int calcular_hash(const char *str, int tamanho){
     unsigned int hash = 5381;
-
     while (*str){
         hash = ((hash << 5) + hash) + (unsigned char)(*str);
         str++;
     }
-
     return hash % tamanho;
 }
 
@@ -50,13 +48,13 @@ void liberar_tabela_hash(TabelaHash *tabela){
 }
 
 int inserir_tabela_hash(TabelaHash *tabela, const char *str){
-    unsigned int indece = calcular_hash(str, tabela->tamanho);
-    No *atual = tabela->listas[indece];
+    unsigned int indice = calcular_hash(str, tabela->tamanho);
+    No *atual = tabela->listas[indice];
 
     while (atual){
         if (strcmp(atual->str, str) == 0){
             atual->contagem++;
-            return;
+            return 1;
         }
         atual = atual->prox;
     }
@@ -64,8 +62,8 @@ int inserir_tabela_hash(TabelaHash *tabela, const char *str){
     No *novo = malloc(sizeof(No));
     novo->str = strdup(str);
     novo->contagem = 1;
-    novo->prox = tabela->listas[indece];
-    tabela->listas[indece] = novo;
+    novo->prox = tabela->listas[indice];
+    tabela->listas[indice] = novo;
     return 0;
 }
 
@@ -98,7 +96,7 @@ char **carregar_csv(const char *nome_arquivo, int *n){
     char buffer[TAM_MAX_LINHA];
     *n = 0;
 
-    while (fgets(buffer, TAM_MAX_LINHA, arquivo) && *n < TAM_MAX_LINHA){
+    while (fgets(buffer, TAM_MAX_LINHA, arquivo) && *n < TAM_MAX_LISTA){
         buffer[strcspn(buffer, "\n")] = 0;
         linhas[*n] = strdup(buffer);
         (*n)++;
@@ -123,7 +121,7 @@ int comparar_strings(const void *a, const void *b){
 int verifica_ordenado(char **linhas, int n){
     qsort(linhas, n, sizeof(char *), comparar_strings);
     for (int i = 1; i < n; i++){
-        if (strcmp(linhas[i], linhas[i + 1]) == 0){
+        if (strcmp(linhas[i-1], linhas[i]) == 0){
             return 1;
         }
     }
@@ -141,15 +139,16 @@ int verifica_linear(char **linhas, int n){
     return 0;
 }
 
+// Substitui medir_tempo para usar clock()
 void medir_tempo(const char *nome, int (*func)(char **, int), char **linhas, int n){
-    struct timespec inicio, fim;
-    clock_gettime(CLOCK_MONOTONIC, &inicio);
+    clock_t inicio = clock();
     int resultado = func(linhas, n);
-    clock_gettime(CLOCK_MONOTONIC, &fim);
-    double tempo = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
+    clock_t fim = clock();
+    double tempo = (double)(fim - inicio) / CLOCKS_PER_SEC;
     printf("%s: %s (%.6f segundos)\n", nome, resultado ? "Duplicados encontrados" : "Nenhum duplicado", tempo);
     printf("Tempo de execução: %.6f segundos\n", tempo);
 }
+
 void menu(){
     printf("\n============================\n");
     printf(" VERIFICADOR DE DUPLICATAS\n");
@@ -177,7 +176,7 @@ int main(){
         if(opcao == 1){
             printf("Quantas strings deseja inserir? ");
             scanf("%d%*c", &n);
-            if(n > TAM_MAX_LINHA) n = TAM_MAX_LINHA;
+            if(n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
             for(int i = 0; i < n; i++){
@@ -189,9 +188,9 @@ int main(){
         } else if(opcao == 2){
             char nome_arquivo[100];
             printf("Insira o nome do arquivo CSV: ");
-             fgets(nome_arquivo, 100, stdin);
+            fgets(nome_arquivo, 100, stdin);
             nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
-            lista = carrega_csv(nome_arquivo, &n);
+            lista = carregar_csv(nome_arquivo, &n);
             if (!lista) continue;
             printf("Arquivo carregado com %d entradas.\n", n);
         } else{
@@ -199,16 +198,20 @@ int main(){
             continue;
         }
 
+        if (!lista || n == 0) {
+            printf("Nenhuma entrada para processar.\n");
+            continue;
+        }
+
         TabelaHash *tabela = criar_tabela_hash(TAM_MAX_LISTA);
-        struct timespec inicio, fim;
-        clock_gettime(CLOCK_MONOTONIC, &inicio);
+        clock_t inicio = clock();
 
         for(int i = 0; i < n; i++){
             inserir_tabela_hash(tabela, lista[i]);
         }
 
-        clock_gettime(CLOCK_MONOTONIC, &fim);
-        double tempo = (fim.tv_sec - inicio.tv_sec) + (fim.tv_nsec - inicio.tv_nsec) / 1e9;
+        clock_t fim = clock();
+        double tempo = (double)(fim - inicio) / CLOCKS_PER_SEC;
         printf("Inserção concluída em %.6f segundos.\n", tempo);
 
         imprime_duplicatas(tabela);
