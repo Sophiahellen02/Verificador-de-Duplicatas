@@ -1,14 +1,14 @@
 #ifndef HASH_H
 #define HASH_H
 
-typedef struct{
+typedef struct No{
     char *str;
     int contagem;
     struct No *prox;
 } No;
 
 typedef struct TabelaHash{
-    No **tabela;
+    No **listas;
     int tamanho;
 } TabelaHash;
 

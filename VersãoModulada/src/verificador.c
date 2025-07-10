@@ -10,7 +10,7 @@ int comparar_strings(const void *a, const void *b){
 
 int verifica_ordenado(char **linhas, int n){
     qsort(linhas, n, sizeof(char *), comparar_strings);
-    for (int i = 1; i < n; i++{
+    for (int i = 1; i < n; i++){
         if (strcmp(linhas[i - 1], linhas[i]) == 0){
             return 1;
         }
