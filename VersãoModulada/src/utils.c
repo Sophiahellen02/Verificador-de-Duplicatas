@@ -10,12 +10,12 @@ char **carregar_csv(const char *nome_arquivo, int *n){
         return NULL;
     }
 
-    char **linhas = malloc (TAM_MAX_LISTA * sizeof(char *));
+    char **linhas = malloc(TAM_MAX_LISTA * sizeof(char *));
     char buffer[TAM_MAX_LINHA];
     *n = 0;
 
     while (fgets(buffer, TAM_MAX_LINHA, arquivo) && *n < TAM_MAX_LISTA){
-        buffer[strcspn(buffer, "\n")] = 0;
+        buffer[strcspn(buffer, "\r\n")] = 0;
         linhas[*n] = strdup(buffer);
         (*n)++;
     }
