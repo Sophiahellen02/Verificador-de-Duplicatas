@@ -231,9 +231,9 @@ int main(){
         liberar_listas(copia, n);
 
         printf("\nTempo para encontrar duplicadas (comparação):\n");
-        printf("    hash: %.6f segundos\n", tempo_hash);
-        printf("    linear: %.6f segundos\n", tempo_linear);
-        printf("    ordenação + comparação: %.6f segundos\n", tempo_ord);
+        printf("    hash: %.9f segundos\n", tempo_hash);
+        printf("    linear: %.9f segundos\n", tempo_linear);
+        printf("    ordenação + comparação: %.9f segundos\n", tempo_ord);
 
         liberar_tabela_hash(tabela);
         liberar_listas(lista, n);
