@@ -51,14 +51,6 @@ int inserir_tabela_hash(TabelaHash *tabela, const char *str){
     unsigned int indice = calcular_hash(str, tabela->tamanho);
     No *atual = tabela->listas[indice];
 
-    while (atual){
-        if (strcmp(atual->str, str) == 0){
-            atual->contagem++;
-            return 1;
-        }
-        atual = atual->prox;
-    }
-
     No *novo = malloc(sizeof(No));
     novo->str = strdup(str);
     novo->contagem = 1;
@@ -115,7 +107,6 @@ void liberar_listas(char **linhas, int n){
 int comparar_strings(const void *a, const void *b){
     char * const *sa = a;
     char * const *sb = b;
-    return strcmp(*sa, *sb);
 }
 
 int verifica_ordenado(char **linhas, int n){
@@ -184,21 +175,37 @@ int main(){
                 buffer[strcspn(buffer, "\n")] = 0;
                 lista[i] = strdup(buffer);
             }
-        } else if(opcao == 2){
-            char nome_arquivo[100];
-            printf("\nInsira o nome do arquivo CSV: ");
-            fgets(nome_arquivo, 100, stdin);
-            nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
-            lista = carregar_csv(nome_arquivo, &n);
-            if (!lista) continue;
-            printf("Arquivo carregado com %d entradas.\n", n);
-        } else{
-            printf("Opção inválida. Tente novamente.\n");
-            continue;
-        }
+        } else if (opcao == 2) {
+            while (1) {
+                char nome_arquivo[100];
+                printf("\nInsira o nome do arquivo CSV: ");
+                fgets(nome_arquivo, 100, stdin);
+                nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
+                lista = carregar_csv(nome_arquivo, &n);
+                if (lista) {
+                    printf("Arquivo carregado com %d entradas.\n", n);
+                    break;
+                } else {
+                    printf("============================\n");
+                    printf("1. Tentar novamente\n2. Sair\n");
+                    printf("============================\n");
+                    printf("Escolha: ");
+                    int escolha = 0;
+                    scanf("%d%*c", &escolha);
+                    if (escolha == 2) {
+                        lista = NULL;
+                        n = 0;
+                        printf("retornando ao menu...\n");
+                        break;
+                    }
+                }
+            }
 
-        if (!lista || n == 0) {
-            printf("Nenhuma entrada para processar.\n");
+            if (!lista || n == 0) {
+                continue;
+            }
+        } else {
+            printf("Opção inválida. Tente novamente.\n");
             continue;
         }
 
