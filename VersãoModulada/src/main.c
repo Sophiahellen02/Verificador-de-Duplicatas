@@ -8,26 +8,54 @@
 #include "verificador.h"
 #include "io.h"
 
-int main(){
+int main() {
     char **lista = NULL;
     int n = 0;
     int opcao;
 
-    while(1){
-        menu();
-        scanf("%d%*c", &opcao);
+    while (1) {
+        char entrada_menu[10];
+        int valido_menu = 0;
+        do {
+            menu();
+            fgets(entrada_menu, sizeof(entrada_menu), stdin);
+            entrada_menu[strcspn(entrada_menu, "\r\n")] = 0;
+            valido_menu = 1;
+            for (int i = 0; entrada_menu[i]; i++) {
+                if (entrada_menu[i] < '0' || entrada_menu[i] > '9') {
+                    valido_menu = 0;
+                    break;
+                }
+            }
+            if (!valido_menu) {
+                printf("Por favor, insira apenas números (0, 1 ou 2).\n");
+            }
+        } while (!valido_menu);
 
-        if(opcao == 0){
-            break;
-        }
+        opcao = atoi(entrada_menu);
+        if (opcao == 0) break;
 
-        if(opcao == 1){
-            printf("\nQuantas strings deseja inserir? ");
-            scanf("%d%*c", &n);
-            if(n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
+        if (opcao == 1) {
+            char entrada[20];
+            int valido = 0;
+            do {
+                printf("\nQuantas strings deseja inserir? ");
+                fgets(entrada, sizeof(entrada), stdin);
+                entrada[strcspn(entrada, "\r\n")] = 0;
+                valido = 1;
+                for (int i = 0; entrada[i]; i++) {
+                    if (entrada[i] < '0' || entrada[i] > '9') {
+                        valido = 0;
+                        break;
+                    }
+                }
+                if (!valido) printf("Por favor, insira apenas números.\n");
+            } while (!valido);
+            n = atoi(entrada);
+            if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
-            for(int i = 0; i < n; i++){
+            for (int i = 0; i < n; i++) {
                 printf("    Insira a string %d: ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
                 buffer[strcspn(buffer, "\n")] = 0;
@@ -44,12 +72,28 @@ int main(){
                     printf("Arquivo carregado com %d entradas.\n", n);
                     break;
                 } else {
-                    printf("============================\n");
+                    printf("\n============================\n");
                     printf("1. Tentar novamente\n2. Sair\n");
                     printf("============================\n");
                     printf("Escolha: ");
                     int escolha = 0;
-                    scanf("%d%*c", &escolha);
+                    char entrada_escolha[10];
+                    int valido_escolha = 0;
+                    do {
+                        fgets(entrada_escolha, sizeof(entrada_escolha), stdin);
+                        entrada_escolha[strcspn(entrada_escolha, "\r\n")] = 0;
+                        valido_escolha = 1;
+                        for (int i = 0; entrada_escolha[i]; i++) {
+                            if (entrada_escolha[i] < '0' || entrada_escolha[i] > '9') {
+                                valido_escolha = 0;
+                                break;
+                            }
+                        }
+                        if (!valido_escolha) {
+                            printf("Por favor, insira apenas números (1 ou 2): ");
+                        }
+                    } while (!valido_escolha);
+                    escolha = atoi(entrada_escolha);
                     if (escolha == 2) {
                         lista = NULL;
                         n = 0;
@@ -58,45 +102,39 @@ int main(){
                     }
                 }
             }
-
-            if (!lista || n == 0) {
-                continue;
-            }
+            if (!lista || n == 0) continue;
         } else {
             printf("Opção inválida. Tente novamente.\n");
             continue;
         }
 
+        clock_t inicio_hash = clock();
         TabelaHash *tabela = criar_tabela_hash(TAM_MAX_LISTA);
-
-        clock_t inicio = clock();
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             inserir_tabela_hash(tabela, lista[i]);
         }
-        clock_t fim = clock();
-
-        clock_t inicio_dup = clock();
+        clock_t fim_hash = clock();
         imprime_duplicatas(tabela);
-        clock_t fim_dup = clock();
-        double tempo_hash = (double)(fim_dup - inicio_dup) / CLOCKS_PER_SEC;
 
         clock_t inicio_linear = clock();
         int resultado_linear = verifica_linear(lista, n);
         clock_t fim_linear = clock();
-        double tempo_linear = (double)(fim_linear - inicio_linear) / CLOCKS_PER_SEC;
 
         char **copia = malloc(n * sizeof(char *));
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             copia[i] = strdup(lista[i]);
         }
         clock_t inicio_ord = clock();
         int resultado_ord = verifica_ordenado(copia, n);
         clock_t fim_ord = clock();
-        double tempo_ord = (double)(fim_ord - inicio_ord) / CLOCKS_PER_SEC;
         liberar_listas(copia, n);
 
-        printf("\nTempo para encontrar duplicadas (comparação):\n");
-        printf("    hash: %.9f segundos\n", tempo_hash);
+        double tempo_hash = (double)(fim_hash - inicio_hash) / CLOCKS_PER_SEC;
+        double tempo_linear = (double)(fim_linear - inicio_linear) / CLOCKS_PER_SEC;
+        double tempo_ord = (double)(fim_ord - inicio_ord) / CLOCKS_PER_SEC;
+
+        printf("\nTempo para encontrar duplicadas:\n");
+        printf("    tabela hash: %.9f segundos\n", tempo_hash);
         printf("    linear: %.9f segundos\n", tempo_linear);
         printf("    ordenação + comparação: %.9f segundos\n", tempo_ord);
 

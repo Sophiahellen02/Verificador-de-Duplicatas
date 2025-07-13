@@ -3,10 +3,25 @@
 #include <string.h>
 #include "hash.h"
 
+// Função de comparação case-insensitive
+int strcmp_ci(const char *a, const char *b) {
+    while (*a && *b) {
+        char ca = *a, cb = *b;
+        if (ca >= 'A' && ca <= 'Z') ca += 32;
+        if (cb >= 'A' && cb <= 'Z') cb += 32;
+        if (ca != cb) return ca - cb;
+        a++; b++;
+    }
+    return *a - *b;
+}
+
+// Hash case-insensitive
 unsigned int calcular_hash(const char *str, int tamanho){
     unsigned int hash = 5381;
     while (*str){
-        hash = ((hash << 5) + hash) + (unsigned char)(*str);
+        char c = *str;
+        if (c >= 'A' && c <= 'Z') c += 32;
+        hash = ((hash << 5) + hash) + (unsigned char)c;
         str++;
     }
     return hash % tamanho;
@@ -38,7 +53,7 @@ int inserir_tabela_hash(TabelaHash *tabela, const char *str){
     No *atual = tabela->listas[indice];
 
     while (atual){
-        if (strcmp(atual->str, str) == 0){
+        if (strcmp_ci(atual->str, str) == 0){
             atual->contagem++;
             return 1;
         }

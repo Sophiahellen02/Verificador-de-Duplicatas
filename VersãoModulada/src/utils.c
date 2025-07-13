@@ -24,6 +24,7 @@ char **carregar_csv(const char *nome_arquivo, int *n){
 }
 
 void liberar_listas(char **linhas, int n){
+    if (!linhas) return;
     for (int i = 0; i < n; i++){
         free(linhas[i]);
     }
