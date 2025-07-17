@@ -55,12 +55,29 @@ int main() {
             if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
+            
+            int i;
             for (int i = 0; i < n; i++) {
-                printf("    Insira a string %d: ", i + 1);
+                printf("    Insira a string %d ('sair' para cancelar): ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
                 buffer[strcspn(buffer, "\n")] = 0;
+
+                if(strcmp(buffer, "sair") == 0){
+                    printf("\nOperação cancelada. Retornando ao menu...\n");
+                    for(int j = 0; j < i; j++){
+                        free(lista[j]);
+                    }
+                    free(lista);
+                    lista = NULL;
+                    n = 0;
+                    break;
+                }
+
                 lista[i] = strdup(buffer);
             }
+
+            if (lista == NULL) continue;
+
         } else if (opcao == 2) {
             while (1) {
                 char nome_arquivo[100];
