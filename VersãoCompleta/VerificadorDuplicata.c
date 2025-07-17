@@ -127,7 +127,7 @@ int comparar_strings(const void *a, const void *b) {
     return strcmp_ci(*sa, *sb);
 }
 
-int verifica_ordenado(char **linhas, int n) {
+int verifica_por_ordenacao(char **linhas, int n) {
     qsort(linhas, n, sizeof(char *), comparar_strings);
     for (int i = 1; i < n; i++) {
         if (strcmp_ci(linhas[i - 1], linhas[i]) == 0) {
@@ -276,7 +276,7 @@ int main() {
             copia[i] = strdup(lista[i]);
         }
         clock_t inicio_ord = clock();
-        int resultado_ord = verifica_ordenado(copia, n);
+        int resultado_ord = verifica_por_ordenacao(copia, n);
         clock_t fim_ord = clock();
         liberar_listas(copia, n);
 
