@@ -125,7 +125,7 @@ int main() {
             copia[i] = strdup(lista[i]);
         }
         clock_t inicio_ord = clock();
-        int resultado_ord = verifica_ordenado(copia, n);
+        int resultado_ord = verifica_por_ordenacao(copia, n);
         clock_t fim_ord = clock();
         liberar_listas(copia, n);
 
