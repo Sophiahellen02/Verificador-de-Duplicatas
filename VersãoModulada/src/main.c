@@ -53,6 +53,13 @@ int main() {
             } while (!valido);
             n = atoi(entrada);
             if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
+
+            if (lista != NULL && n > 0) {
+                liberar_listas(lista, n);
+                lista = NULL;
+                n = 0;
+            }
+
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
             
@@ -84,6 +91,13 @@ int main() {
                 printf("\nInsira o nome do arquivo CSV: ");
                 fgets(nome_arquivo, 100, stdin);
                 nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
+
+                if (lista != NULL && n > 0) {
+                    liberar_listas(lista, n);
+                    lista = NULL;
+                    n = 0;
+                }
+
                 lista = carregar_csv(nome_arquivo, &n);
                 if (lista) {
                     printf("Arquivo carregado com %d entradas.\n", n);
