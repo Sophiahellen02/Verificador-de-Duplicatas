@@ -92,13 +92,15 @@ int main() {
                     printf("\n============================\n");
                     printf("1. Tentar novamente\n2. Sair\n");
                     printf("============================\n");
-                    printf("Escolha: ");
+
                     int escolha = 0;
                     char entrada_escolha[10];
                     int valido_escolha = 0;
                     do {
+                        printf("Escolha: ");
                         fgets(entrada_escolha, sizeof(entrada_escolha), stdin);
                         entrada_escolha[strcspn(entrada_escolha, "\r\n")] = 0;
+
                         valido_escolha = 1;
                         for (int i = 0; entrada_escolha[i]; i++) {
                             if (entrada_escolha[i] < '0' || entrada_escolha[i] > '9') {
@@ -106,15 +108,23 @@ int main() {
                                 break;
                             }
                         }
-                        if (!valido_escolha) {
-                            printf("Por favor, insira apenas números (1 ou 2): ");
+
+                        if (valido_escolha) {
+                            escolha = atoi(entrada_escolha);
+                            if (escolha != 1 && escolha != 2) {
+                                valido_escolha = 0;
+                                printf("\nOpção inválida. Digite 1 ou 2.\n");
+                            }
+                        } else {
+                            printf("Por favor, insira apenas números (1 ou 2).\n");
                         }
+
                     } while (!valido_escolha);
-                    escolha = atoi(entrada_escolha);
+
                     if (escolha == 2) {
                         lista = NULL;
                         n = 0;
-                        printf("retornando ao menu...\n");
+                        printf("Retornando ao menu...\n");
                         break;
                     }
                 }
