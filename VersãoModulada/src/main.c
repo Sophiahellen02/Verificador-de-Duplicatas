@@ -130,7 +130,7 @@ int main() {
                                 printf("\nOpção inválida. Digite 1 ou 2.\n");
                             }
                         } else {
-                            printf("Por favor, insira apenas números (1 ou 2).\n");
+                            printf("\nPor favor, insira apenas números (1 ou 2).\n");
                         }
 
                     } while (!valido_escolha);

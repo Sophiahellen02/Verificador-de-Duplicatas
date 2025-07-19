@@ -96,9 +96,9 @@ void imprime_duplicatas(TabelaHash *tabela) {
     }
 }
 
-char **carregar_csv(const char *nome_arquivo, int *n){
+char **carregar_csv(const char *nome_arquivo, int *n) {
     FILE *arquivo = fopen(nome_arquivo, "r");
-    if (!arquivo){
+    if (!arquivo) {
         perror("Erro ao abrir o arquivo");
         return NULL;
     }
@@ -107,14 +107,14 @@ char **carregar_csv(const char *nome_arquivo, int *n){
     char buffer[TAM_MAX_LINHA];
     *n = 0;
 
-    while (fgets(buffer, TAM_MAX_LINHA, arquivo) && *n < TAM_MAX_LISTA){
+    while (fgets(buffer, TAM_MAX_LINHA, arquivo) && *n < TAM_MAX_LISTA) {
         buffer[strcspn(buffer, "\r\n")] = 0;
         linhas[*n] = strdup(buffer);
         (*n)++;
     }
 
     if (*n == TAM_MAX_LISTA) {
-    printf("Aviso: o arquivo foi parcialmente carregado (limite de %d linhas).\n", TAM_MAX_LISTA);
+        printf("Aviso: o arquivo foi parcialmente carregado (limite de %d linhas).\n", TAM_MAX_LISTA);
     }
 
     fclose(arquivo);
@@ -220,16 +220,16 @@ int main() {
 
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
-            
+
             int i;
             for (int i = 0; i < n; i++) {
                 printf("    Insira a string %d ('sair' para cancelar): ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
                 buffer[strcspn(buffer, "\n")] = 0;
 
-                if(strcmp(buffer, "sair") == 0){
+                if (strcmp(buffer, "sair") == 0) {
                     printf("\nOperação cancelada. Retornando ao menu...\n");
-                    for(int j = 0; j < i; j++){
+                    for (int j = 0; j < i; j++) {
                         free(lista[j]);
                     }
                     free(lista);
@@ -262,7 +262,8 @@ int main() {
                     break;
                 } else {
                     printf("\n============================\n");
-                    printf("1. Tentar novamente\n2. Sair\n");
+                    printf("1. Tentar novamente\n");
+                    printf("2. Sair\n");
                     printf("============================\n");
 
                     int escolha = 0;
@@ -288,7 +289,7 @@ int main() {
                                 printf("\nOpção inválida. Digite 1 ou 2.\n");
                             }
                         } else {
-                            printf("Por favor, insira apenas números (1 ou 2).\n");
+                            printf("\nPor favor, insira apenas números (1 ou 2).\n");
                         }
 
                     } while (!valido_escolha);
