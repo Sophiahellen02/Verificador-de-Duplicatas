@@ -53,6 +53,13 @@ int main() {
             } while (!valido);
             n = atoi(entrada);
             if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
+
+            if (lista != NULL && n > 0) {
+                liberar_listas(lista, n);
+                lista = NULL;
+                n = 0;
+            }
+
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
             
@@ -84,6 +91,13 @@ int main() {
                 printf("\nInsira o nome do arquivo CSV: ");
                 fgets(nome_arquivo, 100, stdin);
                 nome_arquivo[strcspn(nome_arquivo, "\r\n")] = 0;
+
+                if (lista != NULL && n > 0) {
+                    liberar_listas(lista, n);
+                    lista = NULL;
+                    n = 0;
+                }
+
                 lista = carregar_csv(nome_arquivo, &n);
                 if (lista) {
                     printf("Arquivo carregado com %d entradas.\n", n);
@@ -92,13 +106,15 @@ int main() {
                     printf("\n============================\n");
                     printf("1. Tentar novamente\n2. Sair\n");
                     printf("============================\n");
-                    printf("Escolha: ");
+
                     int escolha = 0;
                     char entrada_escolha[10];
                     int valido_escolha = 0;
                     do {
+                        printf("Escolha: ");
                         fgets(entrada_escolha, sizeof(entrada_escolha), stdin);
                         entrada_escolha[strcspn(entrada_escolha, "\r\n")] = 0;
+
                         valido_escolha = 1;
                         for (int i = 0; entrada_escolha[i]; i++) {
                             if (entrada_escolha[i] < '0' || entrada_escolha[i] > '9') {
@@ -106,15 +122,23 @@ int main() {
                                 break;
                             }
                         }
-                        if (!valido_escolha) {
-                            printf("Por favor, insira apenas números (1 ou 2): ");
+
+                        if (valido_escolha) {
+                            escolha = atoi(entrada_escolha);
+                            if (escolha != 1 && escolha != 2) {
+                                valido_escolha = 0;
+                                printf("\nOpção inválida. Digite 1 ou 2.\n");
+                            }
+                        } else {
+                            printf("Por favor, insira apenas números (1 ou 2).\n");
                         }
+
                     } while (!valido_escolha);
-                    escolha = atoi(entrada_escolha);
+
                     if (escolha == 2) {
                         lista = NULL;
                         n = 0;
-                        printf("retornando ao menu...\n");
+                        printf("Retornando ao menu...\n");
                         break;
                     }
                 }

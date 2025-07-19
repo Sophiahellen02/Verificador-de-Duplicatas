@@ -19,6 +19,11 @@ char **carregar_csv(const char *nome_arquivo, int *n){
         linhas[*n] = strdup(buffer);
         (*n)++;
     }
+
+    if (*n == TAM_MAX_LISTA) {
+    printf("Aviso: o arquivo foi parcialmente carregado (limite de %d linhas).\n", TAM_MAX_LISTA);
+    }
+
     fclose(arquivo);
     return linhas;
 }
