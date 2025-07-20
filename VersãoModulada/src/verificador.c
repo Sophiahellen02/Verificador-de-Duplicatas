@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "verificador.h"
-#include "hash.h"
+#include "utils.h"
 
 // Função de comparação de strings para qsort
 int comparar_strings(const void *a, const void *b) {
