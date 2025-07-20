@@ -1,7 +1,6 @@
 #ifndef IO_H
 #define IO_H
 
-void menu(void);
-int ler_quantidade_strings(void);
+void menu(void);                    // Exibe o menu principal
 
 #endif

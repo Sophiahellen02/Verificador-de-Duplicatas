@@ -8,6 +8,7 @@
 #include "verificador.h"
 #include "io.h"
 
+// Função principal
 int main() {
     char **lista = NULL;
     int n = 0;
@@ -16,6 +17,7 @@ int main() {
     while (1) {
         char entrada_menu[10];
         int valido_menu = 0;
+        // Entrada segura e verificada do menu
         do {
             menu();
             fgets(entrada_menu, sizeof(entrada_menu), stdin);
@@ -36,8 +38,10 @@ int main() {
         if (opcao == 0) break;
 
         if (opcao == 1) {
+            // Inserção manual de strings
             char entrada[20];
             int valido = 0;
+
             do {
                 printf("\nQuantas strings deseja inserir? ");
                 fgets(entrada, sizeof(entrada), stdin);
@@ -49,8 +53,11 @@ int main() {
                         break;
                     }
                 }
+
                 if (!valido) printf("Por favor, insira apenas números.\n");
+
             } while (!valido);
+
             n = atoi(entrada);
             if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
 
@@ -62,18 +69,15 @@ int main() {
 
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
-            
-            int i;
+
             for (int i = 0; i < n; i++) {
                 printf("    Insira a string %d ('sair' para cancelar): ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
                 buffer[strcspn(buffer, "\n")] = 0;
 
-                if(strcmp(buffer, "sair") == 0){
+                if (strcmp(buffer, "sair") == 0) {
                     printf("\nOperação cancelada. Retornando ao menu...\n");
-                    for(int j = 0; j < i; j++){
-                        free(lista[j]);
-                    }
+                    for (int j = 0; j < i; j++) free(lista[j]);
                     free(lista);
                     lista = NULL;
                     n = 0;
@@ -86,6 +90,7 @@ int main() {
             if (lista == NULL) continue;
 
         } else if (opcao == 2) {
+            // Importa strings de arquivo CSV
             while (1) {
                 char nome_arquivo[100];
                 printf("\nInsira o nome do arquivo CSV: ");
@@ -99,17 +104,21 @@ int main() {
                 }
 
                 lista = carregar_csv(nome_arquivo, &n);
+
                 if (lista) {
                     printf("Arquivo carregado com %d entradas.\n", n);
                     break;
                 } else {
+                    // Caso erro, permite nova tentativa
                     printf("\n============================\n");
-                    printf("1. Tentar novamente\n2. Sair\n");
+                    printf("1. Tentar novamente\n");
+                    printf("2. Sair\n");
                     printf("============================\n");
 
                     int escolha = 0;
                     char entrada_escolha[10];
                     int valido_escolha = 0;
+
                     do {
                         printf("Escolha: ");
                         fgets(entrada_escolha, sizeof(entrada_escolha), stdin);
@@ -143,12 +152,15 @@ int main() {
                     }
                 }
             }
+
             if (!lista || n == 0) continue;
+
         } else {
             printf("Opção inválida. Tente novamente.\n");
             continue;
         }
 
+        // Verificação de duplicatas por tabela hash
         clock_t inicio_hash = clock();
         TabelaHash *tabela = criar_tabela_hash(TAM_MAX_LISTA);
         for (int i = 0; i < n; i++) {
@@ -157,10 +169,12 @@ int main() {
         clock_t fim_hash = clock();
         imprime_duplicatas(tabela);
 
+        // Verificação linear
         clock_t inicio_linear = clock();
         int resultado_linear = verifica_linear(lista, n);
         clock_t fim_linear = clock();
 
+        // Verificação por ordenação + comparação
         char **copia = malloc(n * sizeof(char *));
         for (int i = 0; i < n; i++) {
             copia[i] = strdup(lista[i]);
@@ -170,15 +184,17 @@ int main() {
         clock_t fim_ord = clock();
         liberar_listas(copia, n);
 
+        // Mostra os tempos de execução
         double tempo_hash = (double)(fim_hash - inicio_hash) / CLOCKS_PER_SEC;
         double tempo_linear = (double)(fim_linear - inicio_linear) / CLOCKS_PER_SEC;
         double tempo_ord = (double)(fim_ord - inicio_ord) / CLOCKS_PER_SEC;
 
-        printf("\nTempo para encontrar duplicadas:\n");
+        printf("\nTempo para encontrar duplicatas:\n");
         printf("    tabela hash: %.9f segundos\n", tempo_hash);
         printf("    linear: %.9f segundos\n", tempo_linear);
         printf("    ordenação + comparação: %.9f segundos\n", tempo_ord);
 
+        // Libera memória e reseta estado
         liberar_tabela_hash(tabela);
         liberar_listas(lista, n);
         lista = NULL;

@@ -2,50 +2,63 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h> // para tolower
 
+// Limites máximos para o número de strings e o tamanho de cada linha
 #define TAM_MAX_LISTA 10000
 #define TAM_MAX_LINHA 200
 
+// Estrutura de um nó da tabela hash (lista encadeada)
 typedef struct No {
-    char *str;
-    int contagem;
-    struct No *prox;
+    char *str;           // string armazenada
+    int contagem;        // número de ocorrências (para contar duplicatas)
+    struct No *prox;     // ponteiro para o próximo nó
 } No;
 
+// Estrutura da tabela hash
 typedef struct TabelaHash {
-    No **listas;
-    int tamanho;
+    No **listas;         // vetor de ponteiros para listas de colisão
+    int tamanho;         // tamanho total da tabela hash
 } TabelaHash;
 
+// Função de comparação de strings ignorando diferença entre maiúsculas e minúsculas
 int strcmp_ci(const char *a, const char *b) {
     while (*a && *b) {
-        char ca = *a, cb = *b;
-        if (ca >= 'A' && ca <= 'Z') ca += 32;
-        if (cb >= 'A' && cb <= 'Z') cb += 32;
+        char ca = tolower((unsigned char)*a);
+        char cb = tolower((unsigned char)*b);
         if (ca != cb) return ca - cb;
         a++; b++;
     }
     return *a - *b;
 }
 
+// Função hash baseada no algoritmo djb2, adaptada para ser case-insensitive
 unsigned int calcular_hash(const char *str, int tamanho) {
     unsigned int hash = 5381;
     while (*str) {
-        char c = *str;
-        if (c >= 'A' && c <= 'Z') c += 32;
-        hash = ((hash << 5) + hash) + (unsigned char)c;
+        hash = ((hash << 5) + hash) + tolower((unsigned char)*str);
         str++;
     }
     return hash % tamanho;
 }
 
+// Aloca e inicializa a tabela hash
 TabelaHash *criar_tabela_hash(int tamanho) {
     TabelaHash *tabela = malloc(sizeof(TabelaHash));
+    if (!tabela) {
+        perror("Erro ao alocar tabela");
+        exit(1);
+    }
     tabela->tamanho = tamanho;
     tabela->listas = calloc(tamanho, sizeof(No *));
+    if (!tabela->listas) {
+        perror("Erro ao alocar listas");
+        exit(1);
+    }
     return tabela;
 }
 
+// Libera toda a memória da tabela hash e seus nós
 void liberar_tabela_hash(TabelaHash *tabela) {
     for (int i = 0; i < tabela->tamanho; i++) {
         No *atual = tabela->listas[i];
@@ -60,16 +73,18 @@ void liberar_tabela_hash(TabelaHash *tabela) {
     free(tabela);
 }
 
+// Insere uma string na tabela hash ou incrementa sua contagem se já existir
 int inserir_tabela_hash(TabelaHash *tabela, const char *str) {
     unsigned int indice = calcular_hash(str, tabela->tamanho);
     No *atual = tabela->listas[indice];
     while (atual) {
         if (strcmp_ci(atual->str, str) == 0) {
-            atual->contagem++;
+            atual->contagem++; // duplicata encontrada
             return 1;
         }
         atual = atual->prox;
     }
+    // Se não encontrou, cria novo nó e insere no início da lista
     No *novo = malloc(sizeof(No));
     novo->str = strdup(str);
     novo->contagem = 1;
@@ -78,6 +93,7 @@ int inserir_tabela_hash(TabelaHash *tabela, const char *str) {
     return 0;
 }
 
+// Exibe as duplicatas presentes na tabela hash
 void imprime_duplicatas(TabelaHash *tabela) {
     int encontrou = 0;
     printf("\nDuplicatas encontradas:\n");
@@ -96,6 +112,7 @@ void imprime_duplicatas(TabelaHash *tabela) {
     }
 }
 
+// Lê um arquivo CSV linha a linha e armazena cada linha como uma string em um vetor
 char **carregar_csv(const char *nome_arquivo, int *n) {
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
@@ -107,20 +124,22 @@ char **carregar_csv(const char *nome_arquivo, int *n) {
     char buffer[TAM_MAX_LINHA];
     *n = 0;
 
+    // Lê cada linha até o fim do arquivo ou até atingir o limite
     while (fgets(buffer, TAM_MAX_LINHA, arquivo) && *n < TAM_MAX_LISTA) {
-        buffer[strcspn(buffer, "\r\n")] = 0;
+        buffer[strcspn(buffer, "\r\n")] = 0; // remove quebras de linha
         linhas[*n] = strdup(buffer);
         (*n)++;
     }
 
     if (*n == TAM_MAX_LISTA) {
-        printf("Aviso: o arquivo foi parcialmente carregado (limite de %d linhas).\n", TAM_MAX_LISTA);
+        printf("Aviso: arquivo parcialmente carregado (limite de %d linhas).\n", TAM_MAX_LISTA);
     }
 
     fclose(arquivo);
     return linhas;
 }
 
+// Libera memória de um vetor de strings
 void liberar_listas(char **linhas, int n) {
     for (int i = 0; i < n; i++) {
         free(linhas[i]);
@@ -128,12 +147,14 @@ void liberar_listas(char **linhas, int n) {
     free(linhas);
 }
 
+// Função de comparação de strings para qsort
 int comparar_strings(const void *a, const void *b) {
-    char * const *sa = a;
-    char * const *sb = b;
+    const char * const *sa = a;
+    const char * const *sb = b;
     return strcmp_ci(*sa, *sb);
 }
 
+// Método 1: Verifica duplicatas ordenando e comparando sequencialmente
 int verifica_por_ordenacao(char **linhas, int n) {
     qsort(linhas, n, sizeof(char *), comparar_strings);
     for (int i = 1; i < n; i++) {
@@ -144,6 +165,7 @@ int verifica_por_ordenacao(char **linhas, int n) {
     return 0;
 }
 
+// Método 2: Verificação bruta com duplo loop (comparação de todos com todos)
 int verifica_linear(char **linhas, int n) {
     for (int i = 0; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -155,6 +177,7 @@ int verifica_linear(char **linhas, int n) {
     return 0;
 }
 
+// Exibe o menu principal
 void menu() {
     printf("\n============================\n");
     printf(" VERIFICADOR DE DUPLICATAS\n");
@@ -166,6 +189,7 @@ void menu() {
     printf("Escolha: ");
 }
 
+// Função principal
 int main() {
     char **lista = NULL;
     int n = 0;
@@ -174,6 +198,7 @@ int main() {
     while (1) {
         char entrada_menu[10];
         int valido_menu = 0;
+        // Entrada segura e verificada do menu
         do {
             menu();
             fgets(entrada_menu, sizeof(entrada_menu), stdin);
@@ -194,8 +219,10 @@ int main() {
         if (opcao == 0) break;
 
         if (opcao == 1) {
+            // Inserção manual de strings
             char entrada[20];
             int valido = 0;
+
             do {
                 printf("\nQuantas strings deseja inserir? ");
                 fgets(entrada, sizeof(entrada), stdin);
@@ -207,8 +234,11 @@ int main() {
                         break;
                     }
                 }
+
                 if (!valido) printf("Por favor, insira apenas números.\n");
+
             } while (!valido);
+
             n = atoi(entrada);
             if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
 
@@ -221,7 +251,6 @@ int main() {
             lista = malloc(n * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
 
-            int i;
             for (int i = 0; i < n; i++) {
                 printf("    Insira a string %d ('sair' para cancelar): ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
@@ -229,9 +258,7 @@ int main() {
 
                 if (strcmp(buffer, "sair") == 0) {
                     printf("\nOperação cancelada. Retornando ao menu...\n");
-                    for (int j = 0; j < i; j++) {
-                        free(lista[j]);
-                    }
+                    for (int j = 0; j < i; j++) free(lista[j]);
                     free(lista);
                     lista = NULL;
                     n = 0;
@@ -244,6 +271,7 @@ int main() {
             if (lista == NULL) continue;
 
         } else if (opcao == 2) {
+            // Importa strings de arquivo CSV
             while (1) {
                 char nome_arquivo[100];
                 printf("\nInsira o nome do arquivo CSV: ");
@@ -257,10 +285,12 @@ int main() {
                 }
 
                 lista = carregar_csv(nome_arquivo, &n);
+
                 if (lista) {
                     printf("Arquivo carregado com %d entradas.\n", n);
                     break;
                 } else {
+                    // Caso erro, permite nova tentativa
                     printf("\n============================\n");
                     printf("1. Tentar novamente\n");
                     printf("2. Sair\n");
@@ -269,6 +299,7 @@ int main() {
                     int escolha = 0;
                     char entrada_escolha[10];
                     int valido_escolha = 0;
+
                     do {
                         printf("Escolha: ");
                         fgets(entrada_escolha, sizeof(entrada_escolha), stdin);
@@ -302,12 +333,15 @@ int main() {
                     }
                 }
             }
+
             if (!lista || n == 0) continue;
+
         } else {
             printf("Opção inválida. Tente novamente.\n");
             continue;
         }
 
+        // Verificação de duplicatas por tabela hash
         clock_t inicio_hash = clock();
         TabelaHash *tabela = criar_tabela_hash(TAM_MAX_LISTA);
         for (int i = 0; i < n; i++) {
@@ -316,10 +350,12 @@ int main() {
         clock_t fim_hash = clock();
         imprime_duplicatas(tabela);
 
+        // Verificação linear
         clock_t inicio_linear = clock();
         int resultado_linear = verifica_linear(lista, n);
         clock_t fim_linear = clock();
 
+        // Verificação por ordenação + comparação
         char **copia = malloc(n * sizeof(char *));
         for (int i = 0; i < n; i++) {
             copia[i] = strdup(lista[i]);
@@ -329,15 +365,17 @@ int main() {
         clock_t fim_ord = clock();
         liberar_listas(copia, n);
 
+        // Mostra os tempos de execução
         double tempo_hash = (double)(fim_hash - inicio_hash) / CLOCKS_PER_SEC;
         double tempo_linear = (double)(fim_linear - inicio_linear) / CLOCKS_PER_SEC;
         double tempo_ord = (double)(fim_ord - inicio_ord) / CLOCKS_PER_SEC;
 
-        printf("\nTempo para encontrar duplicadas:\n");
+        printf("\nTempo para encontrar duplicatas:\n");
         printf("    tabela hash: %.9f segundos\n", tempo_hash);
         printf("    linear: %.9f segundos\n", tempo_linear);
         printf("    ordenação + comparação: %.9f segundos\n", tempo_ord);
 
+        // Libera memória e reseta estado
         liberar_tabela_hash(tabela);
         liberar_listas(lista, n);
         lista = NULL;
