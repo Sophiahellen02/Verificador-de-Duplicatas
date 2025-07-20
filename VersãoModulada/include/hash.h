@@ -20,6 +20,5 @@ TabelaHash *criar_tabela_hash(int tamanho);            // Aloca e inicializa a t
 void liberar_tabela_hash(TabelaHash *tabela);         // Libera toda a memória da tabela hash e seus nós
 int inserir_tabela_hash(TabelaHash *tabela, const char *str); // Insere uma string na tabela hash, contando duplicatas
 void imprime_duplicatas(TabelaHash *tabela);          // Exibe as duplicatas presentes na tabela hash
-int strcmp_ci(const char *a, const char *b);         // Função de comparação de strings ignorando diferença entre maiúsculas e minúsculas
 
 #endif

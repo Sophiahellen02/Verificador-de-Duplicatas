@@ -2,17 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hash.h"
-
-// Função de comparação de strings ignorando diferença entre maiúsculas e minúsculas
-int strcmp_ci(const char *a, const char *b) {
-    while (*a && *b) {
-        char ca = tolower((unsigned char)*a);
-        char cb = tolower((unsigned char)*b);
-        if (ca != cb) return ca - cb;
-        a++; b++;
-    }
-    return *a - *b;
-}
+#include "utils.h"
 
 // Função hash baseada no algoritmo djb2, adaptada para ser case-insensitive
 unsigned int calcular_hash(const char *str, int tamanho) {

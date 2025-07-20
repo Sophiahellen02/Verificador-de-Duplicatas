@@ -3,6 +3,17 @@
 #include <string.h>
 #include "utils.h"
 
+// Função de comparação de strings ignorando diferença entre maiúsculas e minúsculas
+int strcmp_ci(const char *a, const char *b) {
+    while (*a && *b) {
+        char ca = tolower((unsigned char)*a);
+        char cb = tolower((unsigned char)*b);
+        if (ca != cb) return ca - cb;
+        a++; b++;
+    }
+    return *a - *b;
+}
+
 // Lê um arquivo CSV linha a linha e armazena cada linha como uma string em um vetor
 char **carregar_csv(const char *nome_arquivo, int *n) {
     FILE *arquivo = fopen(nome_arquivo, "r");
