@@ -2,6 +2,8 @@
 
 1. [Introdução](#1---introdução)
 2. [Discentes e Docente](#2---discentes-e-docente)
+      - [Discentes](#21---Discentes)
+      - [Docente](#22---Docente) 
 3. [Estrutura do Projeto](#3---estrutura-do-projeto)
 4. [Funcionamento](#4---funcionamento)  
    - [Inserção Manual](#41---inserção-manual)  
@@ -25,14 +27,15 @@ Este projeto, desenvolvido em linguagem C, tem como objetivo verificar duplicata
 
 # 2 - Discentes e Docente
 
-- **Nomes:**
-  - Sophia Hellen
-  - Antonio Andson
-  - Levi Filgueira
-- **GitHub:**
-  - [Sophia Hellen](https://github.com/Sophiahellen02)
+# 2.1 - Discentes:
+
+- **Nome e GitHuns:**
+  - [Sophia Hellen Pires da Silveira](https://github.com/Sophiahellen02)
   - [Antonio Andson](https://github.com/Andyn-1307)
-  - [Levi Filgueira](https://github.com/Levifc)
+  - [Levi Filgueira Chagas](https://github.com/Levifc)
+ 
+# 2.2 - Docente
+- Kennedy Reurison Lopes
 
 ---
 
