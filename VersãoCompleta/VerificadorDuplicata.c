@@ -268,6 +268,12 @@ int main() {
                 }
 
                 lista[i] = strdup(buffer);
+                
+                if (i == TAM_MAX_LISTA - 1) {
+                    printf("Aviso: limite máximo de %d strings atingido. Inserção interrompida.\n", TAM_MAX_LISTA);
+                    n = TAM_MAX_LISTA;
+                    break;
+                }
             }
 
             if (lista == NULL) continue;
