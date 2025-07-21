@@ -5,7 +5,7 @@
 #include <ctype.h> // para tolower
 
 // Limites máximos para o número de strings e o tamanho de cada linha
-#define TAM_MAX_LISTA 10000
+#define TAM_MAX_LISTA 1000000
 #define TAM_MAX_LINHA 200
 
 // Estrutura de um nó da tabela hash (lista encadeada)
