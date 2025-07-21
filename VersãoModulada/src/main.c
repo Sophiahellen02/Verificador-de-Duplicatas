@@ -17,6 +17,7 @@ int main() {
     while (1) {
         char entrada_menu[10];
         int valido_menu = 0;
+
         // Entrada segura e verificada do menu
         do {
             menu();
@@ -59,7 +60,10 @@ int main() {
             } while (!valido);
 
             n = atoi(entrada);
-            if (n > TAM_MAX_LISTA) n = TAM_MAX_LISTA;
+            if (n > TAM_MAX_LISTA) {
+                printf("Aviso: número solicitado excede o limite de %d. Serão inseridas apenas %d strings.\n", TAM_MAX_LISTA, TAM_MAX_LISTA);
+                n = TAM_MAX_LISTA;
+            }
 
             if (lista != NULL && n > 0) {
                 liberar_listas(lista, n);
@@ -67,33 +71,34 @@ int main() {
                 n = 0;
             }
 
-            lista = malloc(n * sizeof(char *));
+            lista = malloc(TAM_MAX_LISTA * sizeof(char *));
             char buffer[TAM_MAX_LINHA];
 
+            int inseridos = 0;
             for (int i = 0; i < n; i++) {
-                printf("    Insira a string %d ('sair' para cancelar): ", i + 1);
+                if (inseridos >= TAM_MAX_LISTA) {
+                    printf("Limite de %d strings atingido. Interrompendo inserção.\n", TAM_MAX_LISTA);
+                    break;
+                }
+
+                printf("    Insira a string %d ('!sair' para cancelar): ", i + 1);
                 fgets(buffer, TAM_MAX_LINHA, stdin);
                 buffer[strcspn(buffer, "\n")] = 0;
 
-                if (strcmp(buffer, "sair") == 0) {
+                if (strcmp(buffer, "!sair") == 0) {
                     printf("\nOperação cancelada. Retornando ao menu...\n");
-                    for (int j = 0; j < i; j++) free(lista[j]);
+                    for (int j = 0; j < inseridos; j++) free(lista[j]);
                     free(lista);
                     lista = NULL;
                     n = 0;
                     break;
                 }
 
-                lista[i] = strdup(buffer);
-                                
-                if (i == TAM_MAX_LISTA - 1) {
-                    printf("Aviso: limite máximo de %d strings atingido. Inserção interrompida.\n", TAM_MAX_LISTA);
-                    n = TAM_MAX_LISTA;
-                    break;
-                }
+                lista[inseridos++] = strdup(buffer);
             }
 
-            if (lista == NULL) continue;
+            if (lista == NULL || inseridos == 0) continue;
+            n = inseridos;
 
         } else if (opcao == 2) {
             // Importa strings de arquivo CSV
@@ -115,7 +120,6 @@ int main() {
                     printf("Arquivo carregado com %d entradas.\n", n);
                     break;
                 } else {
-                    // Caso erro, permite nova tentativa
                     printf("\n============================\n");
                     printf("1. Tentar novamente\n");
                     printf("2. Sair\n");
