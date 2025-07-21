@@ -167,14 +167,16 @@ int verifica_por_ordenacao(char **linhas, int n) {
 
 // Método 2: Verificação bruta com duplo loop (comparação de todos com todos)
 int verifica_linear(char **linhas, int n) {
+    int encontrou = 0;
     for (int i = 0; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
             if (strcmp_ci(linhas[i], linhas[j]) == 0) {
-                return 1;
+                encontrou++;
+                break; // ou continue, se quiser todas as repetições
             }
         }
     }
-    return 0;
+    return encontrou;
 }
 
 // Exibe o menu principal
