@@ -2,8 +2,8 @@
 
 1. [Introdução](#1---introdução)
 2. [Discentes e Docente](#2---discentes-e-docente)
-      - [Discentes](#21---Discentes)
-      - [Docente](#22---Docente) 
+   - [Discentes](#21---discentes)
+   - [Docente](#22---docente) 
 3. [Estrutura do Projeto](#3---estrutura-do-projeto)
 4. [Funcionamento](#4---funcionamento)  
    - [Inserção Manual](#41---inserção-manual)  
@@ -162,7 +162,7 @@ Resultados obtidos com base em entradas reais:
 
 O gráfico abaixo ilustra os tempos de execução dos três métodos com diferentes tamanhos de entrada:
 
-![Gráfico de Desempenho](imgs/grafico_desempenho_duplicatas.png)
+![Gráfico de Desempenho](imgs/grafico_desempenho_duplicatas1.png)
 
 ---
 # 11 - Desafios Encontrados
