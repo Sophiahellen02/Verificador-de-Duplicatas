@@ -2,8 +2,8 @@
 
 1. [Introdução](#1---introdução)
 2. [Discentes e Docente](#2---discentes-e-docente)
-   - [Discentes](#21---discentes)
-   - [Docente](#22---docente) 
+   - [Discentes e GitHubs](#21---discentes-e-githubs)
+   - [Docente e Disciplina](#22---docente-e-disciplina) 
 3. [Estrutura do Projeto](#3---estrutura-do-projeto)
 4. [Funcionamento](#4---funcionamento)  
    - [Inserção Manual](#41---inserção-manual)  
@@ -28,16 +28,15 @@ Este projeto, desenvolvido em linguagem C, tem como objetivo verificar duplicata
 
 # 2 - Discentes e Docente
 
-### 2.1 - Discentes:
-
-- **Nome e GitHuns:**
+### 2.1 - Discentes e GitHubs:
   - [Sophia Hellen Pires da Silveira](https://github.com/Sophiahellen02)
   - [Antonio Andson de Oliveira Rocha](https://github.com/Andyn-1307)
   - [Levi Filgueira Chagas](https://github.com/Levifc)
  
-### 2.2 - Docente
+### 2.2 - Docente e Disciplina: 
 - Kennedy Reurison Lopes
-
+- PEX1247 - Laboratório de Algoritmos e Estrutura de Dados II - T01 (2025.1 - 5T23)
+  
 ---
 
 # 3 - Estrutura do Projeto
