@@ -27,14 +27,14 @@ Este projeto, desenvolvido em linguagem C, tem como objetivo verificar duplicata
 
 # 2 - Discentes e Docente
 
-## 2.1 - Discentes:
+### 2.1 - Discentes:
 
 - **Nome e GitHuns:**
   - [Sophia Hellen Pires da Silveira](https://github.com/Sophiahellen02)
   - [Antonio Andson](https://github.com/Andyn-1307)
   - [Levi Filgueira Chagas](https://github.com/Levifc)
  
-# 2.2 - Docente
+### 2.2 - Docente
 - Kennedy Reurison Lopes
 
 ---
@@ -59,13 +59,13 @@ Ao executar, o programa exibe um menu com as opções:
 ============================
 ```
 
-## 4.1 - Inserção Manual
+### 4.1 - Inserção Manual
 
 - O usuário informa a quantidade de strings.
 - Insere uma a uma no terminal.
 - Pode digitar `sair` a qualquer momento para cancelar, retornando ao menu sem os resultados obtidos dos valores já inseridos.
 
-## 4.2 - Importação via CSV
+### 4.2 - Importação via CSV
 
 - O usuário fornece o nome de um arquivo `.csv` contendo uma string por linha.
 - Em caso de erro na leitura, é oferecida a opção de tentar novamente ou sair.
