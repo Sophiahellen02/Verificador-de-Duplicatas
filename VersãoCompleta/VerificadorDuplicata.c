@@ -5,7 +5,7 @@
 #include <ctype.h> // para tolower
 
 // Limites máximos para o número de strings e o tamanho de cada linha
-#define TAM_MAX_LISTA 10000
+#define TAM_MAX_LISTA 1000000
 #define TAM_MAX_LINHA 200
 
 // Estrutura de um nó da tabela hash (lista encadeada)
@@ -259,13 +259,8 @@ int main() {
 
             int inseridos = 0;
             for (int i = 0; i < n; i++) {
-                if (inseridos >= TAM_MAX_LISTA) {
-                    printf("Limite de %d strings atingido. Interrompendo inserção.\n", TAM_MAX_LISTA);
-                    break;
-                }
-
                 printf("    Insira a string %d ('!sair' para cancelar): ", i + 1);
-                fgets(buffer, TAM_MAX_LINHA, stdin);
+                if (!fgets(buffer, TAM_MAX_LINHA, stdin)) break;
                 buffer[strcspn(buffer, "\n")] = 0;
 
                 if (strcmp(buffer, "!sair") == 0) {
@@ -274,6 +269,19 @@ int main() {
                     free(lista);
                     lista = NULL;
                     n = 0;
+
+                    // limpa qualquer lixo restante no stdin
+                    int ch;
+                    while ((ch = getchar()) != '\n' && ch != EOF);
+                    break;
+                }
+
+                if (inseridos >= TAM_MAX_LISTA) {
+                    printf("Limite de %d strings atingido. Interrompendo inserção.\n", TAM_MAX_LISTA);
+
+                    // limpa qualquer entrada extra no stdin
+                    int ch;
+                    while ((ch = getchar()) != '\n' && ch != EOF);
                     break;
                 }
 

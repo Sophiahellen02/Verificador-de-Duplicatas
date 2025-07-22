@@ -60,6 +60,7 @@
     "hash.h": "c",
     "utils.h": "c",
     "verificador.h": "c",
-    "io.h": "c"
+    "io.h": "c",
+    "ctype.h": "c"
   }
 }
