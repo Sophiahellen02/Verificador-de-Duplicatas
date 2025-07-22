@@ -13,9 +13,10 @@
 7. [Execução](#7---execução)
 8. [Comparação de Métodos](#8---comparação-de-métodos)
 9. [Desempenho](#9---desempenho)
-10. [Desafios Encontrados](#10---desafios-encontrados)
-11. [Observações](#11---observações)
-12. [Licença](#12---licença)
+10. [Gráfico](#10---gráfico-de-desempenho)
+11. [Desafios Encontrados](#11---desafios-encontrados)
+12. [Observações](#12---observações)
+13. [Licença](#13---licença)
 
 ---
 
@@ -157,7 +158,14 @@ Resultados obtidos com base em entradas reais:
 
 ---
 
-# 10 - Desafios Encontrados
+# 10 - Gráfico de Desempenho
+
+O gráfico abaixo ilustra os tempos de execução dos três métodos com diferentes tamanhos de entrada:
+
+![Gráfico de Desempenho](./grafico_desempenho_duplicatas.png)
+
+---
+# 11 - Desafios Encontrados
 
 ## 🧱 Organização e Modularização
 
@@ -180,7 +188,7 @@ Resultados obtidos com base em entradas reais:
 
 ---
 
-# 11 - Observações
+# 12 - Observações
 
 - As versões utilizam busca linear e ordenação + comparação, mas não replicam completamente as funcionalidades presentes na versão com hash.
 - O sistema não trata arquivos CSV com colunas múltiplas (espera-se uma string por linha).
@@ -188,7 +196,7 @@ Resultados obtidos com base em entradas reais:
 
 ---
 
-# 12 - Licença
+# 13 - Licença
 
 Este projeto é de uso acadêmico.
 
