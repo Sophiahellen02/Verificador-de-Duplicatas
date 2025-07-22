@@ -162,7 +162,7 @@ Resultados obtidos com base em entradas reais:
 
 O gráfico abaixo ilustra os tempos de execução dos três métodos com diferentes tamanhos de entrada:
 
-![Gráfico de Desempenho](./grafico_desempenho_duplicatas.png)
+![Gráfico de Desempenho](imgs/grafico_desempenho_duplicatas.png)
 
 ---
 # 11 - Desafios Encontrados
