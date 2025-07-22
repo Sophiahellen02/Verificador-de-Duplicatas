@@ -27,7 +27,7 @@ Este projeto, desenvolvido em linguagem C, tem como objetivo verificar duplicata
 
 # 2 - Discentes e Docente
 
-# 2.1 - Discentes:
+## 2.1 - Discentes:
 
 - **Nome e GitHuns:**
   - [Sophia Hellen Pires da Silveira](https://github.com/Sophiahellen02)
