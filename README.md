@@ -31,7 +31,7 @@ Este projeto, desenvolvido em linguagem C, tem como objetivo verificar duplicata
 
 - **Nome e GitHuns:**
   - [Sophia Hellen Pires da Silveira](https://github.com/Sophiahellen02)
-  - [Antonio Andson](https://github.com/Andyn-1307)
+  - [Antonio Andson de Oliveira Rocha](https://github.com/Andyn-1307)
   - [Levi Filgueira Chagas](https://github.com/Levifc)
  
 ### 2.2 - Docente
@@ -85,6 +85,7 @@ Ao executar, o programa exibe um menu com as opções:
 ## 🔧 Compilação (versão única)
 
 ```bash
+cd VersãoCompleta
 gcc VerificadorDuplicata.c -o verificador
 ```
 
@@ -126,31 +127,31 @@ Resultados obtidos com base em entradas reais:
 
 | Quantidade de entradas | Tempo de Execução (segundos) |
 | ---------------------- | ---------------------------- |
-| 2000                   | 0.003000000                  |
-| 4000                   | 0.006000000                  |
-| 6000                   | 0.004000000                  |
-| 8000                   | 0.011000000                  |
-| 10000                  | 0.014000000                  |
+| 2000                   | 0.004000000                  |
+| 4000                   | 0.007000000                  |
+| 6000                   | 0.010000000                  |
+| 8000                   | 0.013000000                  |
+| 10000                  | 0.011000000                  |
 
 ### Busca Linear
 
 | Quantidade de entradas | Tempo de Execução (segundos) |
 | ---------------------- | ---------------------------- |
-| 2000                   | 0.137000000                  |
-| 4000                   | 0.274000000                  |
-| 6000                   | 0.396000000                  |
-| 8000                   | 0.539000000                  |
-| 10000                  | 0.651000000                  |
+| 2000                   | 0.310000000                  |
+| 4000                   | 0.823000000                  |
+| 6000                   | 1.245000000                  |
+| 8000                   | 1.672000000                  |
+| 10000                  | 1.136000000                  |
 
 ### Ordenação + Comparação
 
 | Quantidade de entradas | Tempo de Execução (segundos) |
 | ---------------------- | ---------------------------- |
-| 2000                   | 0.006000000                  |
-| 4000                   | 0.013000000                  |
-| 6000                   | 0.023000000                  |
-| 8000                   | 0.025000000                  |
-| 10000                  | 0.033000000                  |
+| 2000                   | 0.008000000                  |
+| 4000                   | 0.019000000                  |
+| 6000                   | 0.029000000                  |
+| 8000                   | 0.040000000                  |
+| 10000                  | 0.027000000                  |
 
 > Estes tempos foram obtidos usando `clock()` da biblioteca `<time.h>` em testes reais. Os valores podem variar conforme o tamanho da entrada e a máquina utilizada. Além disso, foi observado que a implementação focada no uso de hash não permitiu uma comparação totalmente justa, pois os métodos linear e ordenação + comparação não possuem todas as funcionalidades presentes na versão com hash. Ainda assim, a abordagem com hash se mostrou mais eficiente.
 
